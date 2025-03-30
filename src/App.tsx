@@ -71,40 +71,51 @@ export const App: React.FC = () => {
           </form>
         </header>
 
-        <section className="todoapp__main" data-cy="TodoList">
-          {loading ? (
-            <p>Loading todos...</p>
-          ) : (
-            filteredTodos.map(todo => (
-              <div
-                key={todo.id}
-                data-cy="Todo"
-                className={`todo ${todo.completed ? 'completed' : ''}`}
-              >
-                <label className="todo__status-label">
-                  <input
-                    data-cy="TodoStatus"
-                    type="checkbox"
-                    className="todo__status"
-                    checked={todo.completed}
-                  />
-                </label>
-
-                <span data-cy="TodoTitle" className="todo__title">
-                  {todo.title}
-                </span>
-
-                <button
-                  type="button"
-                  className="todo__remove"
-                  data-cy="TodoDelete"
+        {todos.length > 0 && (
+          <section className="todoapp__main" data-cy="TodoList">
+            {loading ? (
+              <p>Loading todos...</p>
+            ) : (
+              filteredTodos.map(todo => (
+                <div
+                  key={todo.id}
+                  data-cy="Todo"
+                  className={`todo ${todo.completed ? 'completed' : ''}`}
                 >
-                  ×
-                </button>
-              </div>
-            ))
-          )}
-        </section>
+                  <label className="todo__status-label">
+                    <input
+                      data-cy="TodoStatus"
+                      type="checkbox"
+                      className="todo__status"
+                      checked={todo.completed}
+                      onChange={() => {
+                        setTodos(prevTodos =>
+                          prevTodos.map(t =>
+                            t.id === todo.id
+                              ? { ...t, completed: !t.completed }
+                              : t,
+                          ),
+                        );
+                      }}
+                    />
+                  </label>
+
+                  <span data-cy="TodoTitle" className="todo__title">
+                    {todo.title}
+                  </span>
+
+                  <button
+                    type="button"
+                    className="todo__remove"
+                    data-cy="TodoDelete"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))
+            )}
+          </section>
+        )}
 
         {todos.length > 0 && (
           <footer className="todoapp__footer" data-cy="Footer">
@@ -117,7 +128,10 @@ export const App: React.FC = () => {
                 href="#/"
                 className={`filter__link ${filter === 'all' ? 'selected' : ''}`}
                 data-cy="FilterLinkAll"
-                onClick={() => setFilter('all')}
+                onClick={event => {
+                  event.preventDefault();
+                  setFilter('all');
+                }}
               >
                 All
               </a>
@@ -126,7 +140,10 @@ export const App: React.FC = () => {
                 href="#/active"
                 className={`filter__link ${filter === 'active' ? 'selected' : ''}`}
                 data-cy="FilterLinkActive"
-                onClick={() => setFilter('active')}
+                onClick={event => {
+                  event.preventDefault();
+                  setFilter('active');
+                }}
               >
                 Active
               </a>
@@ -135,7 +152,10 @@ export const App: React.FC = () => {
                 href="#/completed"
                 className={`filter__link ${filter === 'completed' ? 'selected' : ''}`}
                 data-cy="FilterLinkCompleted"
-                onClick={() => setFilter('completed')}
+                onClick={event => {
+                  event.preventDefault();
+                  setFilter('completed');
+                }}
               >
                 Completed
               </a>
