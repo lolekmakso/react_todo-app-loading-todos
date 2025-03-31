@@ -29,13 +29,16 @@ export const App: React.FC = () => {
     setTodos(prev => prev.filter(todo => todo.id !== id));
   };
 
-  const filteredTodos = todos.filter(todo =>
-    filter === 'active'
-      ? !todo.completed
-      : filter === 'completed'
-        ? todo.completed
-        : true,
-  );
+  const filteredTodos = (() => {
+    switch (filter) {
+      case 'active':
+        return todos.filter(todo => !todo.completed);
+      case 'completed':
+        return todos.filter(todo => todo.completed);
+      default:
+        return todos;
+    }
+  })();
 
   return (
     <div className="todoapp">
@@ -53,11 +56,13 @@ export const App: React.FC = () => {
         onToggle={handleToggle}
         onDelete={handleDelete}
       />
-      <Footer
-        filter={filter}
-        setFilter={setFilter}
-        count={filteredTodos.length}
-      />
+      {todos.length > 0 && (
+        <Footer
+          filter={filter}
+          setFilter={setFilter}
+          count={filteredTodos.length}
+        />
+      )}
       <ErrorNotification error={error} onClose={() => setError(null)} />
     </div>
   );
